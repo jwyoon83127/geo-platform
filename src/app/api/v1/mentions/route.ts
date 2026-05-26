@@ -17,13 +17,15 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const brandId = searchParams.get("brand_id");
     const sentiment = searchParams.get("sentiment");
+    const source = searchParams.get("source");
     const limit = parseInt(searchParams.get("limit") || "50");
+    const offset = parseInt(searchParams.get("offset") || "0");
 
     let query = supabase
       .from("mentions")
-      .select("*, brands(name)")
+      .select("*, brands(name)", { count: "exact" })
       .order("created_at", { ascending: false })
-      .limit(limit);
+      .range(offset, offset + limit - 1);
 
     if (brandId) {
       query = query.eq("brand_id", brandId);
@@ -33,7 +35,11 @@ export async function GET(request: NextRequest) {
       query = query.eq("sentiment", sentiment);
     }
 
-    const { data: mentions, error } = await query;
+    if (source) {
+      query = query.eq("source", source);
+    }
+
+    const { data: mentions, error, count } = await query;
 
     if (error) {
       return NextResponse.json(
@@ -42,7 +48,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ data: mentions });
+    return NextResponse.json({ data: mentions, count: count || 0 });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch mentions" },
