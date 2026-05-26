@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/lib/supabase/server";
 import {
   Home,
   BarChart3,
@@ -9,6 +10,8 @@ import {
   Bell,
   Building2,
   MessageSquare,
+  LogOut,
+  User,
 } from "lucide-react";
 
 const sidebarNavItems = [
@@ -19,20 +22,22 @@ const sidebarNavItems = [
   { title: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       {/* Sidebar — 모바일: w-16(아이콘만), 데스크톱: w-64 */}
       <aside className="fixed inset-y-0 left-0 z-30 flex w-16 flex-col border-r bg-background md:w-64">
         <div className="flex h-14 items-center justify-center border-b px-2 md:justify-start md:px-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-primary"
-          >
+          <Link href="/" className="flex items-center gap-2 text-primary">
             <span className="text-lg font-bold md:hidden">G</span>
             <span className="hidden text-base font-bold tracking-tight md:inline">
               Geo Platform
@@ -72,16 +77,40 @@ export default function DashboardLayout({
             </form>
           </div>
 
-          <Button
-            variant="outline"
-            size="icon"
-            className="relative rounded-full"
-          >
-            <Bell className="h-4 w-4" />
-            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-              3
-            </span>
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="icon"
+              className="relative rounded-full"
+            >
+              <Bell className="h-4 w-4" />
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+                3
+              </span>
+            </Button>
+
+            {user && (
+              <div className="flex items-center gap-2">
+                <div className="hidden items-center gap-2 md:flex">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    {user.email}
+                  </span>
+                </div>
+                <form action="/api/auth/signout" method="post">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-md text-muted-foreground hover:text-foreground"
+                    type="submit"
+                  >
+                    <LogOut className="mr-2 h-4 w-4 md:hidden" />
+                    <span className="hidden md:inline">로그아웃</span>
+                  </Button>
+                </form>
+              </div>
+            )}
+          </div>
         </header>
 
         {/* Main Content */}
