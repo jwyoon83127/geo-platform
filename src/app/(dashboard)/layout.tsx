@@ -1,13 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Home,
   BarChart3,
   Settings,
-  Menu,
   Search,
   Bell,
   Building2,
@@ -29,27 +26,31 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      {/* Desktop Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r bg-background md:flex">
-        <div className="flex h-14 items-center border-b px-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-base font-bold tracking-tight text-primary">
+      {/* Sidebar — 모바일: w-16(아이콘만), 데스크톱: w-64 */}
+      <aside className="fixed inset-y-0 left-0 z-30 flex w-16 flex-col border-r bg-background md:w-64">
+        <div className="flex h-14 items-center justify-center border-b px-2 md:justify-start md:px-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-primary"
+          >
+            <span className="text-lg font-bold md:hidden">G</span>
+            <span className="hidden text-base font-bold tracking-tight md:inline">
               Geo Platform
             </span>
           </Link>
         </div>
-        <nav className="flex-1 overflow-auto py-4 px-3">
+        <nav className="flex-1 overflow-auto py-4 px-2 md:px-3">
           <div className="space-y-1">
             {sidebarNavItems.map((item) => (
               <Button
                 key={item.href}
                 variant="ghost"
-                className="w-full justify-start gap-3 rounded-md"
+                className="w-full justify-center gap-0 rounded-md md:justify-start md:gap-3"
                 asChild
               >
-                <Link href={item.href}>
-                  <item.icon className="h-4 w-4" />
-                  {item.title}
+                <Link href={item.href} title={item.title}>
+                  <item.icon className="h-5 w-5 md:h-4 md:w-4" />
+                  <span className="hidden md:inline">{item.title}</span>
                 </Link>
               </Button>
             ))}
@@ -57,45 +58,9 @@ export default function DashboardLayout({
         </nav>
       </aside>
 
-      <div className="flex flex-col md:pl-64">
+      <div className="flex flex-col pl-16 md:pl-64">
         {/* Header */}
         <header className="sticky top-0 z-20 flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
-          <Sheet>
-            <SheetTrigger className="md:hidden">
-              <Button variant="outline" size="icon" className="rounded-md">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0 rounded-r-xl">
-              <div className="flex h-14 items-center border-b px-4">
-                <Link
-                  href="/"
-                  className="flex items-center gap-2 text-base font-bold tracking-tight text-primary"
-                >
-                  Geo Platform
-                </Link>
-              </div>
-              <nav className="flex-1 overflow-auto py-4 px-3">
-                <div className="space-y-1">
-                  {sidebarNavItems.map((item) => (
-                    <Button
-                      key={item.href}
-                      variant="ghost"
-                      className="w-full justify-start gap-3 rounded-md"
-                      asChild
-                    >
-                      <Link href={item.href}>
-                        <item.icon className="h-4 w-4" />
-                        {item.title}
-                      </Link>
-                    </Button>
-                  ))}
-                </div>
-              </nav>
-            </SheetContent>
-          </Sheet>
-
           <div className="w-full flex-1">
             <form className="relative max-w-md">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />

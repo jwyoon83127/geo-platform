@@ -58,7 +58,10 @@ shadcn/ui v4 CSS Variables를 사용합니다. 직접 HEX/RGB를 쓰지 마세�
 | Chart 5 | `--chart-5` | `#8ECAE6` (연한 하늘) |
 
 ### Dark Mode
-`.dark` 클래스가 html에 붙으면 자동으로 다크모드 변수가 적용됩니다. 별도 처리 불필요.
+**Geo Platform은 다크 모드를 지원하지 않습니다.** 모든 UI는 Light Mode 단일 테마로 통일합니다.
+- `.dark` 클래스 또는 `dark:` 변형(variant) 사용 금지
+- `oklch(1 0 0)` (흰색) 기반 배경만 사용
+- 다크모드 관련 CSS 변수/클스 작성 금지
 
 ### 사용 규칙
 
@@ -260,14 +263,15 @@ Footer
 
 ### Dashboard Page
 ```
-Sidebar (fixed left, 64px, rounded-none)
+Sidebar (fixed left, rounded-none)
+  ├─ Mobile:  w-16 (아이콘만 표시)
+  └─ Desktop: w-64 (아이콘 + 텍스트)
   └─ Logo
   └─ Nav Items (icon + text, rounded-md)
-Header (sticky top, rounded-none)
-  └─ Mobile Menu Button (Sheet, rounded-md)
+Header (sticky top, rounded-none, pl-16 md:pl-64)
   └─ Search Input (rounded-md)
   └─ Notification Bell (rounded-full)
-Main Content
+Main Content (pl-16 md:pl-64)
   └─ Stats Cards (4 col grid, gap-4, rounded-xl)
   └─ Chart Card (rounded-xl)
   └─ Table Card (rounded-xl)
@@ -293,6 +297,8 @@ Main Content
 - `--primary` (CITI 짙은 파랑)으로 강조
 - **모든 Card, Button, Input에 rounded 적용**
 - **항상 `container mx-auto max-w-screen-xl`로 정렬**
+- **Sheet/Drawer/Slide-over 등 사이드 슬라이드 UI 사용 금지**
+- **Light Mode 단일 테마 (다크모드 코드 금지)**
 - 모바일 먼저 반응형 설계
 
 ### ❌ Don't
@@ -303,3 +309,5 @@ Main Content
 - 각 페이지마다 다른 디자인 패턴 사용
 - **직각 박스 사용 (`rounded-none`)**
 - **콘텐츠를 화면 끝까지 늘리기 (`w-full` without container)**
+- **Sheet, Drawer, Slide-over 등 슬라이드 패널 사용**
+- **`.dark` 클래스 또는 `dark:` 변형 사용**
