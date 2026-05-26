@@ -9,12 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { MentionsChart } from "@/components/dashboard/mentions-chart";
-import {
-  TrendingUp,
-  MessageSquare,
-  Building2,
-  Eye,
-} from "lucide-react";
+import { TrendingUp, MessageSquare, Building2, Eye } from "lucide-react";
 
 const stats = [
   {
@@ -91,7 +86,7 @@ export default function DashboardPage() {
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.title}>
+          <Card key={stat.title} className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">
                 {stat.title}
@@ -107,7 +102,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Chart */}
-      <Card>
+      <Card className="rounded-xl">
         <CardHeader>
           <CardTitle>Mentions Over Time</CardTitle>
         </CardHeader>
@@ -117,7 +112,7 @@ export default function DashboardPage() {
       </Card>
 
       {/* Recent Mentions Table */}
-      <Card>
+      <Card className="rounded-xl">
         <CardHeader>
           <CardTitle>Recent Mentions</CardTitle>
         </CardHeader>
@@ -135,7 +130,9 @@ export default function DashboardPage() {
             <TableBody>
               {recentMentions.map((mention) => (
                 <TableRow key={mention.id}>
-                  <TableCell className="font-medium">{mention.brand}</TableCell>
+                  <TableCell className="font-medium">
+                    {mention.brand}
+                  </TableCell>
                   <TableCell>{mention.source}</TableCell>
                   <TableCell className="max-w-[300px] truncate">
                     {mention.content}
@@ -146,9 +143,10 @@ export default function DashboardPage() {
                         mention.sentiment === "positive"
                           ? "default"
                           : mention.sentiment === "negative"
-                          ? "destructive"
-                          : "secondary"
+                            ? "destructive"
+                            : "secondary"
                       }
+                      className="rounded-full"
                     >
                       {mention.sentiment}
                     </Badge>

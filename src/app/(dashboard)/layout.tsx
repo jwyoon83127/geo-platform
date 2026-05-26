@@ -2,11 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Home,
   BarChart3,
@@ -36,8 +32,10 @@ export default function DashboardLayout({
       {/* Desktop Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r bg-background md:flex">
         <div className="flex h-14 items-center border-b px-4">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            Geo Platform
+          <Link href="/" className="flex items-center gap-2">
+            <span className="text-base font-bold tracking-tight text-primary">
+              Geo Platform
+            </span>
           </Link>
         </div>
         <nav className="flex-1 overflow-auto py-4 px-3">
@@ -46,7 +44,7 @@ export default function DashboardLayout({
               <Button
                 key={item.href}
                 variant="ghost"
-                className="w-full justify-start gap-3"
+                className="w-full justify-start gap-3 rounded-md"
                 asChild
               >
                 <Link href={item.href}>
@@ -64,16 +62,16 @@ export default function DashboardLayout({
         <header className="sticky top-0 z-20 flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
           <Sheet>
             <SheetTrigger className="md:hidden">
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" className="rounded-md">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0">
+            <SheetContent side="left" className="w-64 p-0 rounded-r-xl">
               <div className="flex h-14 items-center border-b px-4">
                 <Link
                   href="/"
-                  className="flex items-center gap-2 font-semibold"
+                  className="flex items-center gap-2 text-base font-bold tracking-tight text-primary"
                 >
                   Geo Platform
                 </Link>
@@ -84,7 +82,7 @@ export default function DashboardLayout({
                     <Button
                       key={item.href}
                       variant="ghost"
-                      className="w-full justify-start gap-3"
+                      className="w-full justify-start gap-3 rounded-md"
                       asChild
                     >
                       <Link href={item.href}>
@@ -104,12 +102,16 @@ export default function DashboardLayout({
               <Input
                 type="search"
                 placeholder="Search..."
-                className="w-full bg-background pl-8 md:w-[300px] lg:w-[400px]"
+                className="w-full rounded-md bg-background pl-8 md:w-[300px] lg:w-[400px]"
               />
             </form>
           </div>
 
-          <Button variant="outline" size="icon" className="relative">
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative rounded-full"
+          >
             <Bell className="h-4 w-4" />
             <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
               3
@@ -118,7 +120,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Main Content */}
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <main className="mx-auto flex w-full max-w-screen-xl flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           {children}
         </main>
       </div>

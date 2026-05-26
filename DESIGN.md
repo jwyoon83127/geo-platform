@@ -7,9 +7,10 @@
 ## 1. Design Philosophy
 
 - **Minimal & Professional** — 불필요한 장식 제거, 정보 전달 우선
-- **Consistent Spacing** — 4px 기반의 체계적인 간격
+- **Consistent Spacing** — 4px 기반의 체계적인 간격, 화면 정렬(grid snap) 유지
 - **Accessible** — WCAG 2.1 AA 수준 준수 (명도 대비, 키보드 네비게이션)
 - **Responsive First** — Mobile → Tablet → Desktop 순서로 구현
+- **Rounded & Soft** — 모든 박스 요소는 둥근 모서리 적용, 하드한 직각 지양
 
 ---
 
@@ -17,14 +18,26 @@
 
 shadcn/ui v4 CSS Variables를 사용합니다. 직접 HEX/RGB를 쓰지 마세요.
 
+### Primary: CITI Deep Blue
+
+브랜드 메인 컬러는 **CITI 은행 로고 스타일의 짙은 파랑**입니다.
+
+| Mode | Token | oklch 값 | HEX 근사 |
+|------|-------|----------|----------|
+| Light | `--primary` | `oklch(0.38 0.13 250)` | `#003B70` |
+| Light | `--primary-foreground` | `oklch(0.985 0 0)` | `#FFFFFF` |
+| Dark | `--primary` | `oklch(0.60 0.13 250)` | `#4A9FD4` |
+| Dark | `--primary-foreground` | `oklch(0.145 0 0)` | `#0A0A0A` |
+| Light | `--ring` | `oklch(0.55 0.12 250)` | 포커스 링 |
+| Dark | `--ring` | `oklch(0.60 0.13 250)` | 포커스 링 |
+
 ### Base Colors (Light Mode)
 
 | Token | CSS Variable | Usage |
 |-------|-------------|-------|
-| Background | `--background` | 페이지 전체 배경 |
-| Foreground | `--foreground` | 기본 텍스트 |
-| Primary | `--primary` | 메인 CTA, 활성 상태 |
-| Primary Foreground | `--primary-foreground` | Primary 위의 텍스트 |
+| Background | `--background` | 페이지 전체 배경 (흰색) |
+| Foreground | `--foreground` | 기본 텍스트 (거의 검정) |
+| Primary | `--primary` | 메인 CTA, 활성 상태, 사이드바 강조 **(짙은 파랑)** |
 | Secondary | `--secondary` | 보조 버튼, 태그 |
 | Muted | `--muted` | 비활성 배경, 구분선 영역 |
 | Border | `--border` | 카드/입력창 테두리 |
@@ -34,11 +47,15 @@ shadcn/ui v4 CSS Variables를 사용합니다. 직접 HEX/RGB를 쓰지 마세�
 
 ### Chart Colors (Data Visualization)
 
-| Token | Variable | Usage |
-|-------|----------|-------|
-| Chart 1 | `--chart-1` | 주요 데이터 시리즈 |
-| Chart 2 | `--chart-2` | 보조 데이터 시리즈 |
-| Chart 3~5 | `--chart-3`~`--chart-5` | 추가 시리즈 |
+차트 색상도 CITI Blue 팔레트를 기반으로 조화롭게 구성합니다:
+
+| Token | Variable | HEX 근사 |
+|-------|----------|----------|
+| Chart 1 | `--chart-1` | `#003B70` (짙은 파랑) |
+| Chart 2 | `--chart-2` | `#4A9FD4` (중간 파랑) |
+| Chart 3 | `--chart-3` | `#2E6FA8` (청회색) |
+| Chart 4 | `--chart-4` | `#6BB3E0` (밝은 하늘) |
+| Chart 5 | `--chart-5` | `#8ECAE6` (연한 하늘) |
 
 ### Dark Mode
 `.dark` 클래스가 html에 붙으면 자동으로 다크모드 변수가 적용됩니다. 별도 처리 불필요.
@@ -69,26 +86,32 @@ bg-destructive text-destructive-foreground
 
 | Element | Font | Weight | Size |
 |---------|------|--------|------|
-| Body | Geist Sans | 400 | `text-sm` (14px) |
-| Heading 1 | Geist Sans | 700 | `text-3xl` / `md:text-6xl` |
-| Heading 2 | Geist Sans | 700 | `text-2xl` |
-| Heading 3 | Geist Sans | 600 | `text-lg` |
-| Card Title | Geist Sans | 500 | `text-sm` |
+| Body | **Pretendard** | 400 | `text-sm` (14px) |
+| Heading 1 | **Pretendard** | 700 | `text-3xl` / `md:text-6xl` |
+| Heading 2 | **Pretendard** | 700 | `text-2xl` |
+| Heading 3 | **Pretendard** | 600 | `text-lg` |
+| Card Title | **Pretendard** | 500 | `text-sm` |
 | Mono/Code | Geist Mono | 400 | `text-sm` |
 
-### 규칙
+### Pretendard 적용
+- `globals.css`에 `@fontsource/pretendard` import
+- `--font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif`
 - **한국어/영어 혼용** 시 `lang="ko"` 속성 유지
 - `tracking-tight`를 제목에 사용하여 타이트한 느낌
 - `text-muted-foreground`를 보조 텍스트에 사용
 
 ---
 
-## 4. Spacing & Layout
+## 4. Spacing & Layout — 화면 정렬
 
-### Container
+### Container (반드시 일관되게 사용)
 ```
-container mx-auto px-4 lg:px-6
+<div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
 ```
+
+- **max-width**: `max-w-screen-xl` (1280px) — 모든 메인 콘텐츠 공통
+- **padding**: `px-4 lg:px-8` (16px / 32px)
+- **절대 풀브레이드 사용 금지** — 콘텐츠는 항상 container 안에
 
 ### Spacing Scale (Tailwind 기본)
 | Token | Value | Usage |
@@ -100,34 +123,62 @@ container mx-auto px-4 lg:px-6
 | `p-4` | 16px | 카드 낶 패딩 |
 | `p-6` | 24px | 대시보드 메인 패딩 |
 
+### Grid Alignment 규칙
+- **항상 grid 또는 flex + container 조합** 사용
+- **카드들의 상단/하단 라인은 반드시 일치**해야 함
+- **좌우 여백은 동일** — 한쪽만 넓어지는 레이아웃 금지
+- **섹션 간 간격은 24px(`gap-6`) 또는 32px(`gap-8`)으로 통일**
+
+```tsx
+/* ✅ 올바른 정렬 */
+<div className="mx-auto w-full max-w-screen-xl px-4 lg:px-8">
+  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <Card>...</Card>
+    <Card>...</Card>
+    <Card>...</Card>
+    <Card>...</Card>
+  </div>
+</div>
+```
+
 ### Page Padding
 - Marketing: `py-24 md:py-32` (Hero 섹션)
 - Dashboard: `p-4 lg:p-6` (메인 콘텐츠)
 
 ---
 
-## 5. Component Usage Rules
+## 5. Component Usage Rules — 라운드 박스
+
+> **모든 박스 컴포넌트는 둥근 모서리를 적용합니다.** 직각(`rounded-none`)은 절대 사용하지 않습니다.
+
+### Global Radius
+- `--radius: 0.875rem` (14px) — 기본 라운드 값
+- `Card`: `rounded-xl` (14px)
+- `Button`: `rounded-lg` (11.2px) 또는 `rounded-md` (7px)
+- `Input`: `rounded-md` (7px)
+- `Badge`: `rounded-full` (완전 둥근 뱃지)
+- `Sheet/Modal`: `rounded-xl` (14px)
 
 ### Button
 
-| Variant | Usage |
-|---------|-------|
-| `default` | 메인 CTA, Submit |
-| `outline` | 보조 액션, Cancel |
-| `ghost` | 네비게이션, 아이콘 버튼 |
-| `destructive` | 삭제, 위험한 액션 |
-| `link` | 텍스트 링크 |
+| Variant | Usage | Rounded |
+|---------|-------|---------|
+| `default` | 메인 CTA, Submit | `rounded-lg` |
+| `outline` | 보조 액션, Cancel | `rounded-lg` |
+| `ghost` | 네비게이션, 아이콘 버튼 | `rounded-md` |
+| `destructive` | 삭제, 위험한 액션 | `rounded-lg` |
+| `link` | 텍스트 링크 | — |
 
 ```tsx
-<Button size="lg">Primary CTA</Button>
-<Button variant="outline" size="sm">Cancel</Button>
-<Button variant="ghost" asChild><Link href="/">Nav</Link></Button>
+<Button size="lg" className="rounded-lg">Primary CTA</Button>
+<Button variant="outline" size="sm" className="rounded-lg">Cancel</Button>
+<Button variant="ghost" asChild className="rounded-md"><Link href="/">Nav</Link></Button>
 ```
 
-### Card
+### Card — 반드시 rounded 적용
 
 ```tsx
-<Card>
+<Card className="rounded-xl">
   <CardHeader>
     <CardTitle>Title</CardTitle>
     <CardDescription>Description text</CardDescription>
@@ -138,11 +189,11 @@ container mx-auto px-4 lg:px-6
 
 ### Badge (Sentiment)
 
-| Sentiment | Badge Variant |
-|-----------|--------------|
-| positive | `default` (primary) |
-| negative | `destructive` |
-| neutral | `secondary` |
+| Sentiment | Badge Variant | Rounded |
+|-----------|--------------|---------|
+| positive | `default` (primary) | `rounded-full` |
+| negative | `destructive` | `rounded-full` |
+| neutral | `secondary` | `rounded-full` |
 
 ### Table
 
@@ -154,7 +205,7 @@ container mx-auto px-4 lg:px-6
     </TableRow>
   </TableHeader>
   <TableBody>
-    <TableRow>
+    <TableRow className="rounded-lg">
       <TableCell>Data</TableCell>
     </TableRow>
   </TableBody>
@@ -164,7 +215,10 @@ container mx-auto px-4 lg:px-6
 ### Input
 
 ```tsx
-<Input placeholder="Search..." className="bg-background pl-8" />
+<Input 
+  placeholder="Search..." 
+  className="rounded-md bg-background pl-8" 
+/>
 ```
 
 ### Icons
@@ -187,6 +241,7 @@ container mx-auto px-4 lg:px-6
 - Mobile First: 기본 스타일은 모바일, `md:`/`lg:`로 확장
 - 사이드바: `hidden md:flex` (모바일에서는 Sheet drawer)
 - 그리드: `grid-cols-1 md:grid-cols-2 lg:grid-cols-4`
+- **Container는 모든 브레이크포인트에서 `max-w-screen-xl` 유지**
 
 ---
 
@@ -194,38 +249,38 @@ container mx-auto px-4 lg:px-6
 
 ### Marketing Page
 ```
-Header (sticky)
+Header (sticky, rounded-none)
   └─ Logo + Nav Links
 Main
-  └─ Hero Section (centered, large text)
-  └─ Features Grid (4 cards)
+  └─ Hero Section (centered, large text, container mx-auto)
+  └─ Features Grid (4 cards, gap-6, rounded-xl)
 Footer
   └─ Copyright
 ```
 
 ### Dashboard Page
 ```
-Sidebar (fixed left, 64px)
+Sidebar (fixed left, 64px, rounded-none)
   └─ Logo
-  └─ Nav Items (icon + text)
-Header (sticky top)
-  └─ Mobile Menu Button (Sheet)
-  └─ Search Input
-  └─ Notification Bell
+  └─ Nav Items (icon + text, rounded-md)
+Header (sticky top, rounded-none)
+  └─ Mobile Menu Button (Sheet, rounded-md)
+  └─ Search Input (rounded-md)
+  └─ Notification Bell (rounded-full)
 Main Content
-  └─ Stats Cards (4 col grid)
-  └─ Chart Card
-  └─ Table Card
+  └─ Stats Cards (4 col grid, gap-4, rounded-xl)
+  └─ Chart Card (rounded-xl)
+  └─ Table Card (rounded-xl)
 ```
 
 ---
 
 ## 8. Animation & Transition
 
-- **Hover**: `hover:bg-accent`, `hover:text-accent-foreground`
+- **Hover**: `hover:bg-accent`, `hover:text-accent-foreground`, `transition-colors`
 - **Focus**: `focus-visible:ring-1 focus-visible:ring-ring`
 - **Sheet/Modal**: `duration-200 ease-in-out`
-- **Skeleton**: shadcn/ui `Skeleton` 컴포넌트 사용 (추가 필요 시)
+- **Skeleton**: shadcn/ui `Skeleton` 컴포넌트 사용 (추가 필요 시), `rounded-xl` 적용
 
 ---
 
@@ -235,7 +290,9 @@ Main Content
 - shadcn/ui 컴포넌트를 먼저 검색해서 사용 (`npx shadcn@latest add <component>`)
 - `cn()` 유틸로 클래스 병합
 - `lucide-react` 아이콘만 사용
-- `--primary` 색상으로 강조
+- `--primary` (CITI 짙은 파랑)으로 강조
+- **모든 Card, Button, Input에 rounded 적용**
+- **항상 `container mx-auto max-w-screen-xl`로 정렬**
 - 모바일 먼저 반응형 설계
 
 ### ❌ Don't
@@ -244,3 +301,5 @@ Main Content
 - `lucide-react` 외의 아이콘 라이브러리 추가
 - `px` 단위 하드코딩 (Tailwind spacing scale 사용)
 - 각 페이지마다 다른 디자인 패턴 사용
+- **직각 박스 사용 (`rounded-none`)**
+- **콘텐츠를 화면 끝까지 늘리기 (`w-full` without container)**
