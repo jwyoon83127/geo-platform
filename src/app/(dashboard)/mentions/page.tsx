@@ -25,7 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Loader2, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, RotateCcw, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 
 interface Brand {
   id: string;
@@ -42,6 +43,7 @@ interface Mention {
   sentiment: "positive" | "negative" | "neutral";
   reach: number;
   created_at: string;
+  analyzed_at: string | null;
   brands: { name: string } | null;
 }
 
@@ -53,6 +55,8 @@ export default function MentionsPage() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [offset, setOffset] = useState(0);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null);
 
   const [brandId, setBrandId] = useState<string>("");
   const [sentiment, setSentiment] = useState<string>("");
@@ -105,6 +109,44 @@ export default function MentionsPage() {
     setSource("");
     setSearch("");
     setOffset(0);
+  };
+
+  const handleBatchAnalyze = async () => {
+    setAnalyzing(true);
+    try {
+      const res = await fetch("/api/v1/mentions/analyze", { method: "POST" });
+      const json = await res.json();
+      if (res.ok) {
+        toast.success(`${json.success}개 멘션 AI 분석 완료`);
+        fetchMentions();
+      } else {
+        toast.error(json.error || "분석 중 오류가 발생했습니다");
+      }
+    } catch {
+      toast.error("분석 중 오류가 발생했습니다");
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const handleAnalyze = async (id: string) => {
+    setAnalyzingId(id);
+    try {
+      const res = await fetch(`/api/v1/mentions/${id}/analyze`, {
+        method: "POST",
+      });
+      if (res.ok) {
+        toast.success("AI 분석 완료");
+        fetchMentions();
+      } else {
+        const json = await res.json();
+        toast.error(json.error || "분석 중 오류가 발생했습니다");
+      }
+    } catch {
+      toast.error("분석 중 오류가 발생했습니다");
+    } finally {
+      setAnalyzingId(null);
+    }
   };
 
   const filteredMentions = search
@@ -199,6 +241,21 @@ export default function MentionsPage() {
         </CardContent>
       </Card>
 
+      <div className="flex justify-end">
+        <Button
+          onClick={handleBatchAnalyze}
+          disabled={analyzing}
+          className="rounded-lg"
+        >
+          {analyzing ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Sparkles className="mr-2 h-4 w-4" />
+          )}
+          미분석 멘션 AI 분석
+        </Button>
+      </div>
+
       {/* Mentions Table */}
       <Card className="rounded-xl">
         <CardHeader>
@@ -232,6 +289,7 @@ export default function MentionsPage() {
                     <TableHead>감성</TableHead>
                     <TableHead>도달</TableHead>
                     <TableHead>날짜</TableHead>
+                    <TableHead className="w-24"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -276,6 +334,23 @@ export default function MentionsPage() {
                       <TableCell className="text-muted-foreground whitespace-nowrap">
                         {new Date(mention.created_at).toLocaleDateString(
                           "ko-KR"
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {!mention.analyzed_at && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleAnalyze(mention.id)}
+                            disabled={analyzingId === mention.id}
+                            className="rounded-md"
+                          >
+                            {analyzingId === mention.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Sparkles className="h-4 w-4" />
+                            )}
+                          </Button>
                         )}
                       </TableCell>
                     </TableRow>
