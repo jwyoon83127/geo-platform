@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // 인증이 필요 없는 public 경로
-  const publicPaths = ["/login", "/signup", "/auth"];
+  const publicPaths = ["/login", "/signup", "/auth", "/api/seed", "/api/v1/brands", "/api/v1/mentions"];
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
 
   // 로그인하지 않은 사용자는 /login으로 리다이렉트
