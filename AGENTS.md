@@ -143,6 +143,8 @@ export async function GET(request: NextRequest) {
 
 ## 8. Sub-Agent Usage Guide
 
+### 8.1 Built-in Agent Types
+
 | 상황 | 에이전트 타입 | 사용법 |
 |------|--------------|--------|
 | 코드베이스 탐색 (3개 이상 파일 검색) | `explore` | `Agent(subagent_type="explore")` |
@@ -153,6 +155,55 @@ export async function GET(request: NextRequest) {
 - explore는 **read-only** — 코드 수정하지 않음
 - coder는 독립적 작업 수행 후 결과 보고
 - plan은 구현 전 **반드시 사용자 승인** 받음
+
+### 8.2 Project Domain Agents (프롬프트 파일)
+
+Geo Platform 전용으로 미리 정의된 전문가 에이전트 프롬프트입니다. 작업 위임 시 해당 파일 내용을 프롬프트에 포함하세요.
+
+| 역할 | 프로필 | 프롬프트 파일 |
+|------|--------|--------------|
+| **UI/UX Planner** | 30년차 UI/UX 기획자. HCI 박사. | `.agents/ui-ux-planner.md` |
+| **Fullstack Dev** | 30년차 풀스택 개발자. 컴퓨터 공학 박사. | `.agents/fullstack-dev.md` |
+| **QA Engineer** | 30년차 QA 엔지니어. 소프트웨어 공학 박사. | `.agents/qa-engineer.md` |
+
+### 8.3 Checklist Rule (필수)
+
+> **모든 서브 에이전트는 작업을 시작하기 전과 완료 후 반드시 체크리스트를 작성하고 검토해야 합니다.**
+
+#### 시작 전 (Pre-Flight)
+1. `AGENTS.md`, `DESIGN.md`, `CLAUDE.md` 확인
+2. 관련 기존 코드 탐색 (`explore` 권장)
+3. 작업 범위 및 영향 파일 식별
+4. **체크리스트 작성** — `templates/checklist.md` 템플릿 사용
+
+#### 완료 후 (Post-Flight)
+1. `npm run build` 통과 확인
+2. 디자인 시스템 준수 확인 (Pretendard, CITI Blue, rounded, 정렬)
+3. 보안 검증 (API Key 노출, RLS, 입력값 검증)
+4. **체크리스트 검토** — 완료 항목 체크, 미완료 시 사유 기록
+
+### 8.4 Agent Collaboration Workflow
+
+```
+[새 기능 요청]
+    ↓
+[Plan Agent] — 아키텍처 설계 및 단계 분해
+    ↓
+[UI/UX Planner] — 화면 기획 + 체크리스트 작성
+    ↓
+[Fullstack Dev] — 코드 구현 + 체크리스트 작성
+    ↓
+[QA Engineer] — 품질 검증 + 체크리스트 검토
+    ↓
+[Merge & Push]
+```
+
+### 8.5 Checklist Storage
+
+완료된 체크리스트는 아래 형식으로 저장하여 추적합니다:
+```
+templates/completed/YYYYMMDD_[작업명]_체크리스트.md
+```
 
 ---
 
