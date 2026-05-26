@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, Loader2, RotateCcw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Brand {
   id: string;
@@ -268,8 +269,11 @@ export default function MentionsPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            <div className="space-y-3">
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
             </div>
           ) : filteredMentions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
